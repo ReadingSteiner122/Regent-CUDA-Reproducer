@@ -11,7 +11,9 @@ You need to pass the following flags to the Regent compiler to run `reproducer.r
 - Create a build directory to keep all your object files.
 - `cd build`
 - `cmake ..`
-- `make`
+- `make`  
+
+
 Pretty standard stuff. We tested and built our object files using NVHPC 22.5 and CUDA 11.7.64.
 
 ## Results
