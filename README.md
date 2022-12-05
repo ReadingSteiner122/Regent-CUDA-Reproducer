@@ -6,6 +6,8 @@ You need to pass the following flags to the Regent compiler to run `reproducer.r
 - ```-ll:gpu 1```
 - ```-ll:fsize 2048```
 - ```-ll:csize 2048```
+
+
 To run `reproducer_q_derivatives.rg`, you need to pass the following flags:
 - ```-ll:gpu 1```
 - ```-ll:fsize 5120```
