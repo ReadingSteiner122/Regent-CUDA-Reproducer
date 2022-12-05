@@ -7,6 +7,8 @@
 using namespace std;
 using namespace std::chrono;
 
+// Built using cmake
+
 struct point{
     double x[max_points];
     double y[max_points];
@@ -18,6 +20,8 @@ struct point{
 };
 point points;
 
+
+// Initialize the points
 void init_vals(point &points){
     for(int i=0;i<max_points;i++){
         points.x[i] = i*0.0001;
@@ -45,9 +49,11 @@ void init_vals(point &points){
 __global__ void qsim(point &points){
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
 
+    // check if thread is out of bounds
     if(tid >= max_points || tid < 0)
         return ;
 
+    // Perform required calculations
     double x_i = points.x[tid];
     double y_i = points.y[tid];
 
@@ -107,6 +113,7 @@ __global__ void qsim(point &points){
     }
 }
 
+// Printing Function to debug input-output
 void printPoint(point &points){
     for(int i=0;i<max_points;i++){
         cout << points.x[i] << " " << points.y[i] << " " << points.nbhs[i] << " ";
@@ -115,26 +122,27 @@ void printPoint(point &points){
             cout << points.conn[j][i] << " ";
         }
         cout << endl;
-        // for(int j=0;j<4;j++){
-        //     cout << points.q[j][i] << " ";
-        // }
-        // cout << endl;
-        // for(int j=0;j<4;j++){
-        //     for(int k=0;k<2;k++){
-        //         cout << points.dq[k][j][i] << " ";
-        //     }
-        //     cout << endl;
-        // }
-        // for(int j=0;j<4;j++){
-        //     for(int k=0;k<2;k++){
-        //         cout << points.qm[k][j][i] << " ";
-        //     }
-        //     cout << endl;
-        // }
-        // cout << endl;
+        for(int j=0;j<4;j++){
+            cout << points.q[j][i] << " ";
+        }
+        cout << endl;
+        for(int j=0;j<4;j++){
+            for(int k=0;k<2;k++){
+                cout << points.dq[k][j][i] << " ";
+            }
+            cout << endl;
+        }
+        for(int j=0;j<4;j++){
+            for(int k=0;k<2;k++){
+                cout << points.qm[k][j][i] << " ";
+            }
+            cout << endl;
+        }
+        cout << endl;
     }
 }
 
+// Old CUDA task to check if timing isn't varying
 __global__ void oldCheck(point &points){
     int tid = threadIdx.x + blockIdx.x * blockDim.x;
     
@@ -155,15 +163,18 @@ __global__ void oldCheck(point &points){
 int main(){
     init_vals(points);
 
+    // Kernel Launch Parameters
     dim3 threadsPerBlock(128, 1, 1);
     dim3 blocksPerGrid((max_points/threadsPerBlock.x)+1, 1, 1);
 
+    // Declare GPU Memory Pointers
     point *point_d;
     unsigned long long point_size = sizeof(point);
 
     cudaMalloc(&point_d, point_size);
     cudaMemcpy(point_d, &points, point_size, cudaMemcpyHostToDevice);
 
+    // Launch Kernel 1000 times
     auto start = high_resolution_clock::now();
     for(int i=0; i<1000; i++){
         qsim<<<blocksPerGrid, threadsPerBlock>>>(*point_d);

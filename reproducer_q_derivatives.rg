@@ -6,6 +6,8 @@ local format = require("std/format")
 local timing = require("std/timing")
 local c = regentlib.c
 
+-- runs with -ll:gpu 1 -ll:csize 5120 -ll:fsize 5120
+
 fspace point{
     x : double,
     y : double,
@@ -142,6 +144,19 @@ do
         for i = 0, point.nbhs do
             format.println("conn[{}] = {}", i, point.conn[i])
         end
+        for i = 0, 4 do
+            format.println("q[{}] = {}", i, point.q[i])
+        end
+        for i = 0, 2 do
+            for j = 0, 4 do
+                format.println("qm[{}, {}] = {}", i, j, point.qm[flatten(i, j)])
+            end
+        end
+        for i = 0, 2 do
+            for j = 0, 4 do
+                format.println("dq[{}, {}] = {}", i, j, point.dq[flatten(i, j)])
+            end
+        end
     end
 end
 
@@ -151,11 +166,9 @@ task main()
     __fence(__execution, __block)
     var itime = regentlib.c.legion_get_current_time_in_micros()
     q_sim(points)
-    -- oldCheck(points)
     __fence(__execution, __block)
     var ftime = regentlib.c.legion_get_current_time_in_micros()
     format.println("Time taken: {} seconds", double(ftime - itime)/1e6)
-    -- printPoint(points)
 end
 
 regentlib.start(main)
