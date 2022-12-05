@@ -12,11 +12,28 @@ if(NOT DEFINED CMAKE_CUDA_ARCHITECTURES)
 endif()
 
 add_executable(reproducer ${HEADERS} reproducer.cu)
+add_executable(reproducer_q_derivatives ${HEADERS} reproducer_q_derivatives.cu)
+
 set_target_properties(reproducer PROPERTIES 
                     CUDA_SEPARABLE_COMPILATION ON
                     CXX_STANDARD 14
                 )
+
+set_target_properties(reproducer_q_derivatives PROPERTIES 
+                    CUDA_SEPARABLE_COMPILATION ON
+                    CXX_STANDARD 14
+                )
+
 target_compile_options(reproducer PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
+                       -mcmodel=medium
+                       -O3
+                       -lineinfo
+                       --generate-line-info
+                       -g
+                       >)
+
+                       
+target_compile_options(reproducer_q_derivatives PRIVATE $<$<COMPILE_LANGUAGE:CUDA>:
                        -mcmodel=medium
                        -O3
                        -lineinfo
