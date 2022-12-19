@@ -26,6 +26,8 @@ Pretty standard stuff. We tested and built our object files using NVHPC 22.5 and
 The average cudaTask runtimes are as follows:
 - `C`: 1.248ms (obtained from NSight Systems stats view).
 - `Regent`: 1.380ms (obtained from Legion_prof and a script to read tsv files).
+
+
 The average qsim runtimes are as follows:
 - `C` : 7.245ms
-` `Regent` : 9.180ms (9.44ms with conn being `regentlib.array`)
+- `Regent` : 9.180ms (9.44ms with conn being `regentlib.array`)
